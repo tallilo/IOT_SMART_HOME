@@ -260,15 +260,15 @@ if __name__ == '__main__':
     if db_init:
         init_db(db_name)
         # insertion init IOT dataset    
-        numb =create_IOT_dev('alarm', 'off', 'celcius', timestamp(), 300, 'teslaCarId', 'left front', 'alarm', 'false', 'cooling', 'mode', 'fan', '32', comm_topic+'ala-1/pub', comm_topic+'ala-1/sub', 'changed')
+        numb =create_IOT_dev('alarm', 'off', 'N', timestamp(), 300, 'teslaCarId', 'left front', 'alarm', 'false', 'cooling', 'mode', 'fan', '32', comm_topic+'ala-1/pub', comm_topic+'ala-1/sub', 'changed')
         numb =create_IOT_dev('DHT-1', 'on', 'celcius', timestamp(), 300, 'teslaCarId', 'placed', 'detector', 'enabled', 'state', 'mode', 'fan', 'temperature', comm_topic+'DHT-1/pub', comm_topic+'DHT-1/sub', 'done')
         numb =create_IOT_dev('DHT-2', 'on', 'celcius', timestamp(), 300, 'teslaCarId', 'placed', 'detector', 'enabled', 'state', 'mode', 'fan', 'temperature', comm_topic+'DHT-2/pub', comm_topic+'DHT-2/sub', 'done')
         numb =create_IOT_dev('SensitivityMeter', 'on', 'N', timestamp(), 3600, 'teslaCarId', 'placed', 'meter', 'enabled', 'state', 'mode', 'fan', 'NA', comm_topic+'SensitivityMeter/pub', comm_topic+'SensitivityMeter/sub', 'done')
         numb =create_IOT_dev('ElecMeter', 'on', 'kWh', timestamp(), 3600, 'teslaCarId', 'placed', 'meter', 'enabled', 'state', 'mode', 'fan', 'NA', comm_topic+'elecMeter/pub', comm_topic+'elecMeter/sub', 'done')
-        numb =create_IOT_dev('MotionSensor', 'off', 'km', timestamp(), 600, 'teslaCarId', 'placed', 'actuator-detector', 'enabled', 'state', 'mode', 'fan', '85', comm_topic+'motion/pub', comm_topic+'motion/sub', 'done')
+        numb =create_IOT_dev('Motion', 'off', 'km', timestamp(), 600, 'teslaCarId', 'placed', 'actuator-detector', 'enabled', 'state', 'mode', 'fan', '85', comm_topic+'motion/pub', comm_topic+'motion/sub', 'done')
         
         # add initial row data to all IOT devices:
-        # water and elecricity consumption:
+        # Sensitivity and elecricity consumption:
         
         start_senstivity =  437.4
         start_el = 162040
@@ -290,7 +290,7 @@ if __name__ == '__main__':
     
     rez= filter_by_date('data','2021-05-16','2021-05-18', 'ElecMeter')
     print(rez)
-    # df = fetch_data(db_name,'data', 'WaterMeter')
+    # df = fetch_data(db_name,'data', 'SensitivityMeter')
     # ic2(df.head())
 
     temperature = []  
@@ -327,9 +327,9 @@ if __name__ == '__main__':
             #pylab.clf()
     
     # while False:
-    #     update_IOT_dev(('20','airconditioner'))
+    #     update_IOT_dev(('20','alarm'))
     #     tm.sleep(30)
-    #     update_IOT_dev(('22','airconditioner'))
+    #     update_IOT_dev(('22','alarm'))
     #     tm.sleep(30)
     # #numb =add_IOT_data('DTH-1', timestamp(), 27)
     #ic2(numb)

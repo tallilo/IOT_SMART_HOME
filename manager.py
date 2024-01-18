@@ -67,8 +67,8 @@ def insert_DB(topic, m_decode):
             # TODO - update IOT device last_updated         
     # Elec Meter case:
     elif 'Meter' in m_decode:        
-        da.add_IOT_data('ElectricityMeter', da.timestamp(), m_decode.split(' Electricity: ')[1].split(' Water: ')[0])
-        da.add_IOT_data('WaterMeter', da.timestamp(), m_decode.split(' Water: ')[1])
+        da.add_IOT_data('ElectricityMeter', da.timestamp(), m_decode.split(' Electricity: ')[1].split(' Sensitivity: ')[0])
+        da.add_IOT_data('SensitivityMeter', da.timestamp(), m_decode.split(' Sensitivity: ')[1])
 
 def parse_data(m_decode):
     value = 'NA'
@@ -80,7 +80,7 @@ def enable(client, topic, msg):
     ic(topic+' '+msg)
     client.publish(topic, msg)
 
-def airconditioner(client,topic, msg):
+def alarm(client,topic, msg):
     ic(topic)
     enable(client, topic, msg)
     pass
@@ -91,12 +91,12 @@ def actuator(client,topic, msg):
 
 def check_DB_for_change(client):
     
-    df = da.fetch_data(db_name, 'data', 'WaterMeter')
+    df = da.fetch_data(db_name, 'data', 'SensitivityMeter')
     
     if len(df.value)==0: return
 
-    if float(df.value[len(df.value)-1]) > Water_max:
-        msg = 'Current water consumption exceed the normal! '+df.value[len(df.value)-1]
+    if float(df.value[len(df.value)-1]) > sensitivityMax:
+        msg = 'Current Sensitivity consumption exceed the normal! '+df.value[len(df.value)-1]
         ic(msg)
         client.publish(comm_topic+'alarm', msg)
 
@@ -116,9 +116,9 @@ def check_Data(client):
         for row in rrows:
             #ic(row)
             topic = row[17]
-            if row[10]=='airconditioner':
+            if row[10]=='alarm':
                 msg = 'Set temperature to: ' + str(row[15])
-                airconditioner(client, topic, msg)
+                alarm(client, topic, msg)
                 da.update_IOT_status(int(row[0]))
             else:
                 msg = 'actuated'

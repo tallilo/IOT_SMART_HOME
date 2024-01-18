@@ -1,4 +1,4 @@
-# Class of home IOT devices (emulators) like: DHT, Elec meter, water meter and etc.
+# Class of home IOT devices (emulators) like: DHT, Elec meter, Sensitivity meter and etc.
 import sys
 import random
 from PyQt5 import  QtCore
@@ -118,7 +118,7 @@ class ConnectionDock(QDockWidget):
             formLayot.addRow("Turn On/Off",self.eConnectbtn)
             formLayot.addRow("Pub topic",self.ePublisherTopic)
             formLayot.addRow("Electricity",self.Temperature)
-            formLayot.addRow("Water",self.Humidity)
+            formLayot.addRow("Sensitivity",self.Humidity)
         else:
             self.eSubscribeTopic=QLineEdit()
             self.eSubscribeTopic.setText(self.topic_sub)
@@ -187,7 +187,7 @@ class MainWindow(QMainWindow):
             self.timer = QtCore.QTimer(self)
             self.timer.timeout.connect(self.create_data_EW)
             self.timer.start(int(self.update_rate)*1000) # in msec        
-        elif 'Airconditioner' in self.name:          
+        elif 'Alarm' in self.name:
             # Creating timer for update rate support
             self.timer = QtCore.QTimer(self)
             self.timer.timeout.connect(self.create_data_Air)
@@ -198,7 +198,7 @@ class MainWindow(QMainWindow):
             self.timer = QtCore.QTimer(self)
             self.timer.timeout.connect(self.create_data_Fr)
             self.timer.start(int(self.update_rate)*1000) # in msec        
-        elif 'Boiler' in self.name:
+        elif 'Motion' in self.name:
             tmp_upd = 80          
             # Creating timer for update rate support
             self.timer = QtCore.QTimer(self)
@@ -232,20 +232,20 @@ class MainWindow(QMainWindow):
         self.mc.publish_to(self.topic_pub,current_data)
 
     def create_data_EW(self):
-        ic('Electricity-Water data update')
+        ic('Electricity-Sensitivity data update')
         hour_delta_w = 0.42/24
         hour_delta_el = (670/17)/24
         elec= format(hour_delta_el+random.randrange(-100,100)/300, '.2f') 
-        water=format(hour_delta_w +random.randrange(-10,10)/1000, '.3f')
-        current_data= 'From: ' + self.name + ' Electricity: '+str(elec)+' Water: '+str(water)
+        Sensitivity=format(hour_delta_w +random.randrange(-10,10)/1000, '.3f')
+        current_data= 'From: ' + self.name + ' Electricity: '+str(elec)+' Sensitivity: '+str(Sensitivity)
         self.connectionDock.Temperature.setText(str(elec))
-        self.connectionDock.Humidity.setText(str(water))
+        self.connectionDock.Humidity.setText(str(Sensitivity))
         if not self.mc.connected:
             self.connectionDock.on_button_connect_click()
         self.mc.publish_to(self.topic_pub,current_data)
 
     def create_data_Air(self):
-        ic('Airconditioner data update')        
+        ic('Alarm data update')
         if not self.mc.connected:
             self.connectionDock.on_button_connect_click()
         if not self.mc.subscribed:
@@ -277,7 +277,7 @@ class MainWindow(QMainWindow):
 
     def create_data_Bo(self):
         global tmp_upd
-        ic('Boiler data update')        
+        ic('Motion data update')
         if not self.mc.connected:
             self.connectionDock.on_button_connect_click()
         if not self.mc.subscribed:
@@ -293,7 +293,7 @@ if __name__ == '__main__':
         app = QApplication(sys.argv)
         argv=sys.argv
         if len(sys.argv)==1:
-            argv.append('Airconditioner')
+            argv.append('Alarm')
             argv.append('Celsius')
             argv.append('air-1')
             argv.append('7')

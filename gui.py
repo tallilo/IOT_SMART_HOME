@@ -74,15 +74,15 @@ class MC(Mqtt_client):
                 mainwin.airconditionDock.update_temp_Room(check(m_decode.split('Temperature: ')[1].split(' Humidity: ')[0]))
             if 'Home' in topic:               
                 if WatMet:
-                    mainwin.graphsDock.update_electricity_meter(check(m_decode.split('Electricity: ')[1].split(' Water: ')[0]))
+                    mainwin.graphsDock.update_electricity_meter(check(m_decode.split('Electricity: ')[1].split(' Sensitivity: ')[0]))
                     WatMet = False
                 else:
-                    mainwin.graphsDock.update_water_meter(check(m_decode.split(' Water: ')[1]))
+                    mainwin.graphsDock.update_Sensitivity_meter(check(m_decode.split(' Sensitivity: ')[1]))
                     WatMet = True
             if 'alarm' in topic:            
                 mainwin.statusDock.update_mess_win(da.timestamp()+': ' + m_decode)
-            if 'boiler' in topic:
-                mainwin.statusDock.boilerTemp.setText(check(m_decode.split('Temperature: ')[1]))
+            if 'motion' in topic:
+                mainwin.statusDock.motionTemp.setText(check(m_decode.split('Temperature: ')[1]))
             if 'freezer' in topic:
                 mainwin.statusDock.freezerTemp.setText(check(m_decode.split('Temperature: ')[1]))
             if 'refrigerator' in topic:
@@ -140,9 +140,9 @@ class StatusDock(QDockWidget):
     def __init__(self,mc):
         QDockWidget.__init__(self)        
         self.mc = mc
-        self.boilerTemp = QLabel()
-        self.boilerTemp.setText("80")
-        self.boilerTemp.setStyleSheet("color: red")
+        self.motionTemp = QLabel()
+        self.motionTemp.setText("80")
+        self.motionTemp.setStyleSheet("color: red")
         self.freezerTemp = QLabel()
         self.freezerTemp.setText("-5")
         self.freezerTemp.setStyleSheet("color: blue")
@@ -159,7 +159,7 @@ class StatusDock(QDockWidget):
         self.eSubscribeButton = QPushButton("Subscribe",self)
         self.eSubscribeButton.clicked.connect(self.on_button_subscribe_click)       
         formLayot=QFormLayout()
-        formLayot.addRow("Boiler temperature:", self.boilerTemp)
+        formLayot.addRow("Motion distance:", self.motionTemp)
         formLayot.addRow("Freezer temperature:", self.freezerTemp)
         formLayot.addRow("Refrigerator temperature:", self.fridgeTemp)
         formLayot.addRow("WI-Fi status:",self.wifi)
@@ -193,10 +193,10 @@ class GraphsDock(QDockWidget):
         self.eElectricityButton.clicked.connect(self.on_button_Elec_click)        
         self.eElectricityText=QLineEdit()
         self.eElectricityText.setText(" ")
-        self.eWaterButton = QPushButton("Show",self)
-        self.eWaterButton.clicked.connect(self.on_button_water_click)        
-        self.eWaterText= QLineEdit()
-        self.eWaterText.setText(" ")
+        self.eSensitivityButton = QPushButton("Show",self)
+        self.eSensitivityButton.clicked.connect(self.on_button_Sensitivity_click)
+        self.eSensitivityText= QLineEdit()
+        self.eSensitivityText.setText(" ")
         self.eStartDate= QLineEdit()
         self.eEndDate= QLineEdit()
         self.eStartDate.setText("2021-05-10")
@@ -207,8 +207,8 @@ class GraphsDock(QDockWidget):
         formLayot=QFormLayout()       
         formLayot.addRow("Electricity meter",self.eElectricityButton)
         formLayot.addRow(" ", self.eElectricityText)
-        formLayot.addRow("Water meter",self.eWaterButton)
-        formLayot.addRow(" ", self.eWaterText)
+        formLayot.addRow("Sensitivity meter",self.eWaterButton)
+        formLayot.addRow(" ", self.eSensitivityText)
         formLayot.addRow("Start date: ", self.eStartDate)
         formLayot.addRow("End date: ", self.eEndDate)
         formLayot.addRow("", self.eDateButton)
@@ -217,8 +217,8 @@ class GraphsDock(QDockWidget):
         self.setWidget(widget)
         self.setWindowTitle("Graphs")
 
-    def update_water_meter(self, text):
-        self.eWaterText.setText(text)
+    def update_Sensitivity_meter(self, text):
+        self.eSensitivityText.setText(text)
 
     def update_electricity_meter(self, text):
         self.eElectricityText.setText(text) 
@@ -227,9 +227,9 @@ class GraphsDock(QDockWidget):
         self.stratDateStr= self.eStartDate.text()
         self.endDateStr= self.eEndDate.text()        
 
-    def on_button_water_click(self):
-       self.update_plot(self.stratDateStr, self.endDateStr, 'WaterMeter')       
-       self.eWaterButton.setStyleSheet("background-color: yellow")
+    def on_button_Sensitivity_click(self):
+       self.update_plot(self.stratDateStr, self.endDateStr, 'SensitivityMeter')
+       self.eSensitivityButton.setStyleSheet("background-color: yellow")
 
     def on_button_Elec_click(self):
         self.update_plot(self.stratDateStr, self.endDateStr, 'ElecMeter')
@@ -252,9 +252,9 @@ class TempDock(QDockWidget):
         QDockWidget.__init__(self)        
         self.mc = mc    
         
-        self.tBoiler = QComboBox()        
-        self.tBoiler.addItems(["Auto", "ON", "OFF"])
-        self.tBoiler.currentIndexChanged.connect(self.tb_selectionchange)        
+        self.tMotion = QComboBox()
+        self.tMotion.addItems(["Auto", "ON", "OFF"])
+        self.tMotion.currentIndexChanged.connect(self.tb_selectionchange)
         self.tFreezer = QComboBox()        
         self.tFreezer.addItems(["-5", "-10", "-15"])
         #self.tFreezer.currentIndexChanged.connect(self.tF_selectionchange)
@@ -264,9 +264,7 @@ class TempDock(QDockWidget):
         self.tsetButton = QPushButton("SET(UPDATE)",self)
         self.tsetButton.clicked.connect(self.on_tsetButton_click)
         formLayot=QFormLayout()       
-        formLayot.addRow("Home Boiler",self.tBoiler)
-        formLayot.addRow("Kitchen Freezer",self.tFreezer)
-        formLayot.addRow("Refrigerator",self.tRefrigerator)
+        formLayot.addRow("Motion sensor",self.tMotion)
         formLayot.addRow("",self.tsetButton)
         widget = QWidget(self)
         widget.setLayout(formLayot)
@@ -274,23 +272,20 @@ class TempDock(QDockWidget):
         self.setWindowTitle("Set Temperature")
     def on_tsetButton_click(self):
         self.tsetButton.setStyleSheet("background-color: green")
-        self.mc.publish_to(comm_topic+'freezer/sub','Set temperature to: '+ self.tFreezer.currentText())
         time.sleep(0.2)
-        self.mc.publish_to(comm_topic+'refrigerator/sub','Set temperature to: '+ self.tRefrigerator.currentText())
-        time.sleep(0.2)
-        if "ON" in self.tBoiler.currentText():
-            self.tBoiler.setStyleSheet("color: green")
-            self.mc.publish_to(comm_topic+'boiler/sub','Set temperature to: ON')            
+        if "ON" in self.tMotion.currentText():
+            self.tMotion.setStyleSheet("color: green")
+            self.mc.publish_to(comm_topic+'Motion/sub','Set temperature to: ON')
 
     def tb_selectionchange(self,i):
-        print ("Current index",i,"selection changed ",self.tBoiler.currentText())
-        if "ON" in self.tBoiler.currentText():
-            self.tBoiler.setStyleSheet("color: green")
-            # self.mc.publish_to('pr/Smart/boiler/sub','Set temperature to: ')
-        elif "OFF" in self.tBoiler.currentText():
-            self.tBoiler.setStyleSheet("color: red")
+        print ("Current index",i,"selection changed ",self.tMotion.currentText())
+        if "ON" in self.tMotion.currentText():
+            self.tMotion.setStyleSheet("color: green")
+            # self.mc.publish_to('pr/Smart/Motion/sub','Set temperature to: ')
+        elif "OFF" in self.tMotion.currentText():
+            self.tMotion.setStyleSheet("color: red")
         else:
-            self.tBoiler.setStyleSheet("color: none") 
+            self.tMotion.setStyleSheet("color: none")
 
 class AirconditionDock(QDockWidget):
     """Aircondition """

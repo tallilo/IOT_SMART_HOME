@@ -92,7 +92,7 @@ class BOT():
                     userresponcestring  =''
                 icA(userresponcestring)
                 if "yes" in userresponcestring:                    
-                    dfW = da.fetch_data(db_name, 'data', 'WaterMeter').value    
+                    dfW = da.fetch_data(db_name, 'data', 'SensitivityMeter').value
                     if len(dfW)==0:
                         W_report = 'currently unavailable' 
                     else:
@@ -103,7 +103,7 @@ class BOT():
                         E_report = 'currently unavailable' 
                     else:
                         E_report =str((pd.to_numeric(dfE, errors='ignore', downcast='float')).mean())
-                    text_msg = 'The current home state: electricity average consumption is '+ E_report +' kiloWatt per hour and operated under normal condition, water average consumption is '+ W_report +' cubic meters per hour and it is usial to current seson'    
+                    text_msg = 'The current home state: electricity average consumption is '+ E_report +' kiloWatt per hour and operated under normal condition, Sensitivity average consumption is '+ W_report +' cubic meters per hour and it is usial to current seson'
                     ts.save2file(ts.tts_request(text_msg),ttsfile)					  
                     time.sleep(sys_delay)
                     pl.play(ttsfile)
@@ -191,11 +191,11 @@ class BOT():
                 if 'yes' in userresponcestring:
                     #ts.save2file(ts.tts_request('how many celcius degrees would you like to adjust the air?'),ttsfile)
                     #Check that the windows are close
-                    icA('How many celcius degrees would you like to adjust the airconditioner?')                   
+                    icA('How many celcius degrees would you like to adjust the alarm?')
                     if path.exists("how_many_celcius.wav"):
                         pl.play("how_many_celcius.wav")
                     else:    
-                        ts.save2file(ts.tts_request('How many celcius degrees would you like to adjust the airconditioner?'),ttsfile)
+                        ts.save2file(ts.tts_request('How many celcius degrees would you like to adjust the alarm?'),ttsfile)
                         pl.play(ttsfile)
                     time.sleep(sys_delay)
                    
@@ -211,7 +211,7 @@ class BOT():
                     # here should be analitics request to manager
                     if userresponcestring == '':  
                         userresponcestring = '22'					 
-                    da.update_IOT_dev((userresponcestring,'airconditioner'))
+                    da.update_IOT_dev((userresponcestring,'alarm'))
                     time.sleep(sys_delay)
                     icA('Data request..')
                     icA('The air conditioner is set to ' +  str(userresponcestring) + ' Celsius degrees,something else?')
@@ -382,10 +382,10 @@ class BOT():
                     pl.play("something else.wav")
                     time.sleep(sys_delay)
                     continue
-            if "water temperature" in userresponcestring:
+            if "Sensitivity Volume" in userresponcestring:
             # here should be analitics request to manager
                 icA('Data request..')
-                ts.save2file(ts.tts_request('The water temperature is 25 celcius degrees , whould you like to turn on the boiler ?'),ttsfile)
+                ts.save2file(ts.tts_request('The sensitivity volume is 30N , would you like to turn on the alarm ?'),ttsfile)
                 time.sleep(sys_delay)
                 pl.play(ttsfile)
                 time.sleep(sys_delay)
@@ -399,7 +399,7 @@ class BOT():
                 if 'yes' in userresponcestring:
                     #icA('Data request..')
                     # here should be analitics request to manager
-                    icA('The boiler turned on')
+                    icA('The alarm turned on')
                     pl.play('The_boiler_turned_on.wav')
                     #ts.save2file(ts.tts_request('the boiler turned on'),ttsfile)					   
                     time.sleep(sys_delay)

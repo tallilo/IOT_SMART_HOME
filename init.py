@@ -54,7 +54,7 @@ db_init =  False   #False # True if we need reinit Tesla Manager setup
 
 # Meters consuption limits"
 
-## insted of water max 
+## insted of Sensitivity max
 # i switched the water_max to senstivity_max
-Senstivity_max=0.02
+sensitivityMax=0.02
 Elec_max=1.8
