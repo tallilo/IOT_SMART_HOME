@@ -96,7 +96,7 @@ class ConnectionDock(QDockWidget):
             formLayot.addRow("Pub topic",self.ePublisherTopic)
             formLayot.addRow("Temperature",self.Temperature)
             formLayot.addRow("Humidity",self.Humidity)
-        elif 'Air' in self.name:
+        elif 'Motion' in self.name:
             self.eSubscribeTopic=QLineEdit()
             self.eSubscribeTopic.setText(self.topic_sub)
             self.ePushtbtn=QPushButton("", self)
@@ -107,7 +107,7 @@ class ConnectionDock(QDockWidget):
             formLayot.addRow("Turn On/Off",self.eConnectbtn)
             formLayot.addRow("Sub topic",self.eSubscribeTopic)
             formLayot.addRow("Status",self.ePushtbtn)
-            formLayot.addRow("Temperature",self.Temperature)        
+            formLayot.addRow("Distance",self.Temperature)
         elif 'Elec' in self.name:
             self.ePublisherTopic=QLineEdit()
             self.ePublisherTopic.setText(self.topic_pub)
@@ -130,7 +130,6 @@ class ConnectionDock(QDockWidget):
             formLayot.addRow("Turn On/Off",self.eConnectbtn)
             formLayot.addRow("Sub topic",self.eSubscribeTopic)
             formLayot.addRow("Status",self.ePushtbtn)
-            formLayot.addRow("Temperature",self.Temperature)
         widget = QWidget(self)
         widget.setLayout(formLayot)
         self.setTitleBarWidget(widget)
@@ -192,24 +191,12 @@ class MainWindow(QMainWindow):
             self.timer = QtCore.QTimer(self)
             self.timer.timeout.connect(self.create_data_Air)
             self.timer.start(int(self.update_rate)*1000) # in msec
-        elif 'Freezer' in self.name:
-            tmp_upd = -5          
-            # Creating timer for update rate support
-            self.timer = QtCore.QTimer(self)
-            self.timer.timeout.connect(self.create_data_Fr)
-            self.timer.start(int(self.update_rate)*1000) # in msec        
         elif 'Motion' in self.name:
             tmp_upd = 80          
             # Creating timer for update rate support
             self.timer = QtCore.QTimer(self)
             self.timer.timeout.connect(self.create_data_Bo)
             self.timer.start(int(self.update_rate)*1000) # in msec
-        elif 'Refrigerator' in self.name:
-            tmp_upd = 4          
-            # Creating timer for update rate support
-            self.timer = QtCore.QTimer(self)
-            self.timer.timeout.connect(self.create_data_Ref)
-            self.timer.start(int(self.update_rate)*1000) # in msec    
         # general GUI settings
         self.setUnifiedTitleAndToolBarOnMac(True)
         # set up main window
@@ -250,30 +237,6 @@ class MainWindow(QMainWindow):
             self.connectionDock.on_button_connect_click()
         if not self.mc.subscribed:
             self.mc.subscribe_to(self.topic_sub)
-
-    def create_data_Fr(self):
-        global tmp_upd
-        ic('Freezer data update')        
-        if not self.mc.connected:
-            self.connectionDock.on_button_connect_click()
-        if not self.mc.subscribed:
-            self.mc.subscribe_to(self.topic_sub)
-        temp=tmp_upd+random.randrange(-10,-5)/10        
-        current_data=  'Temperature: '+str(temp)
-        self.connectionDock.Temperature.setText(str(temp))        
-        self.mc.publish_to(self.topic_pub,current_data)
-
-    def create_data_Ref(self):
-        global tmp_upd
-        ic('Refrigerator data update')        
-        if not self.mc.connected:
-            self.connectionDock.on_button_connect_click()
-        if not self.mc.subscribed:
-            self.mc.subscribe_to(self.topic_sub)
-        temp=tmp_upd+random.randrange(-10,-5)/10        
-        current_data=  'Temperature: '+str(temp)
-        self.connectionDock.Temperature.setText(str(temp))        
-        self.mc.publish_to(self.topic_pub,current_data)    
 
     def create_data_Bo(self):
         global tmp_upd

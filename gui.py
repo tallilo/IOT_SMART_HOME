@@ -83,11 +83,6 @@ class MC(Mqtt_client):
                 mainwin.statusDock.update_mess_win(da.timestamp()+': ' + m_decode)
             if 'motion' in topic:
                 mainwin.statusDock.motionTemp.setText(check(m_decode.split('Temperature: ')[1]))
-            if 'freezer' in topic:
-                mainwin.statusDock.freezerTemp.setText(check(m_decode.split('Temperature: ')[1]))
-            if 'refrigerator' in topic:
-                mainwin.statusDock.fridgeTemp.setText(check(m_decode.split('Temperature: ')[1]))    
-
 
    
 class ConnectionDock(QDockWidget):
@@ -143,12 +138,6 @@ class StatusDock(QDockWidget):
         self.motionTemp = QLabel()
         self.motionTemp.setText("80")
         self.motionTemp.setStyleSheet("color: red")
-        self.freezerTemp = QLabel()
-        self.freezerTemp.setText("-5")
-        self.freezerTemp.setStyleSheet("color: blue")
-        self.fridgeTemp = QLabel()
-        self.fridgeTemp.setText("4")
-        self.fridgeTemp.setStyleSheet("color: green")
         self.wifi = QLabel()
         self.wifi.setText("Normal")
         self.wifi.setStyleSheet("color: green")
@@ -160,8 +149,6 @@ class StatusDock(QDockWidget):
         self.eSubscribeButton.clicked.connect(self.on_button_subscribe_click)       
         formLayot=QFormLayout()
         formLayot.addRow("Motion distance:", self.motionTemp)
-        formLayot.addRow("Freezer temperature:", self.freezerTemp)
-        formLayot.addRow("Refrigerator temperature:", self.fridgeTemp)
         formLayot.addRow("WI-Fi status:",self.wifi)
         formLayot.addRow("Main Door:",self.door)        
         formLayot.addRow("Alarm Messages:",self.eRecMess)
@@ -255,12 +242,6 @@ class TempDock(QDockWidget):
         self.tMotion = QComboBox()
         self.tMotion.addItems(["Auto", "ON", "OFF"])
         self.tMotion.currentIndexChanged.connect(self.tb_selectionchange)
-        self.tFreezer = QComboBox()        
-        self.tFreezer.addItems(["-5", "-10", "-15"])
-        #self.tFreezer.currentIndexChanged.connect(self.tF_selectionchange)
-        self.tRefrigerator = QComboBox()
-        self.tRefrigerator.addItems(["4", "3", "2", "1", "0", "-1", "-2", "-3", "-4"])
-        #self.tRefrigerator.currentIndexChanged.connect(self.tR_selectionchange)
         self.tsetButton = QPushButton("SET(UPDATE)",self)
         self.tsetButton.clicked.connect(self.on_tsetButton_click)
         formLayot=QFormLayout()       

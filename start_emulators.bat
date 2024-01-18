@@ -8,11 +8,7 @@ start "Emulator: Electricity&Sensitivity Meter" python emulator.py ElecSensitivi
 timeout 3
 start "Emulator: Alarm" python emulator.py Alarm N air-1 5
 timeout 3
-start "Emulator: Freezer" python emulator.py Freezer Celsius freezer 6
-timeout 3
 start "Emulator: Motion" python emulator.py Motion km motion 8
-timeout 3
-start "Emulator: Refrigerator" python emulator.py Refrigerator Celsius refrigerator 9
 timeout 3
 start "Tesla Security Manager" python manager.py
 timeout 10
