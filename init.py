@@ -30,7 +30,7 @@ password = passwords[nb]
 
 # Common
 conn_time = 0 # 0 stands for endless loop
-comm_topic = 'pr/Smart/'
+comm_topic = 'pr/Tesla'
 #comm_topic = 'pr/Smart/Home/'
 
 
@@ -53,5 +53,8 @@ db_name = 'data\\teslaData_05_2.db' # SQLite
 db_init =  False   #False # True if we need reinit Tesla Manager setup
 
 # Meters consuption limits"
-Water_max=0.02
+
+## insted of water max 
+# i switched the water_max to senstivity_max
+Senstivity_max=0.02
 Elec_max=1.8

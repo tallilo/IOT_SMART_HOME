@@ -53,6 +53,10 @@ def create_table(conn, create_table_sql):
 
 def init_db(database):
     # database = r"data\teslaData.db"    
+    # 
+    #
+    # - here we deleted addres an 
+    # + we added teslaCardId 
     tables = [
     """ CREATE TABLE IF NOT EXISTS `data` (
 	`name`	TEXT NOT NULL,
@@ -67,9 +71,7 @@ def init_db(database):
     `units`	TEXT,
 	`last_updated`	TEXT NOT NULL,
 	`update_interval`	INTEGER NOT NULL,
-	`address`	TEXT,
-	`building`	TEXT,
-	`room`	TEXT,
+	`teslaCarId`	TEXT,
 	`placed`	TEXT,
 	`dev_type`	TEXT NOT NULL,
 	`enabled`	INTEGER,    
@@ -108,19 +110,19 @@ def csv_acq_data(table_name):
             if conn:
                 conn.close()    
 
-def create_IOT_dev(name, status, units, last_updated, update_interval, address, building, room, placed, dev_type, enabled, state, mode, fan, temperature, dev_pub_topic, dev_sub_topic, special):
+def create_IOT_dev(name, status, units, last_updated, update_interval, teslaCarId, placed, dev_type, enabled, state, mode, fan, temperature, dev_pub_topic, dev_sub_topic, special):
     """
     Create a new IOT device into the iot_devices table
     :param conn:
     :param :
     :return: sys_id
     """
-    sql = ''' INSERT INTO iot_devices(name, status, units, last_updated, update_interval, address, building, room, placed, dev_type, enabled, state, mode, fan, temperature, dev_pub_topic, dev_sub_topic, special)
-              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
+    sql = ''' INSERT INTO iot_devices(name, status, units, last_updated, update_interval, teslaCarId, placed, dev_type, enabled, state, mode, fan, temperature, dev_pub_topic, dev_sub_topic, special)
+              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
     conn = create_connection()
     if conn is not None:
         cur = conn.cursor()
-        cur.execute(sql, [name, status, units, last_updated, update_interval, address, building, room, placed, dev_type, enabled, state, mode, fan, temperature, dev_pub_topic, dev_sub_topic, special])
+        cur.execute(sql, [name, status, units, last_updated, update_interval, teslaCarId, placed, dev_type, enabled, state, mode, fan, temperature, dev_pub_topic, dev_sub_topic, special])
         conn.commit()
         re = cur.lastrowid
         conn.close()
@@ -258,21 +260,21 @@ if __name__ == '__main__':
     if db_init:
         init_db(db_name)
         # insertion init IOT dataset    
-        numb =create_IOT_dev('airconditioner', 'off', 'celcius', timestamp(), 300, 'New York, Park Avenu 221', 'apartment 34', 'Living Room', 'west wall', 'airconditioner', 'false', 'cooling', 'mode', 'fan', '32', comm_topic+'air-1/pub', comm_topic+'air-1/sub', 'changed')
-        numb =create_IOT_dev('DHT-1', 'on', 'celcius', timestamp(), 300, 'address', 'building', 'room', 'placed', 'detector', 'enabled', 'state', 'mode', 'fan', 'temperature', comm_topic+'DHT-1/pub', comm_topic+'DHT-1/sub', 'done')
-        numb =create_IOT_dev('DHT-2', 'on', 'celcius', timestamp(), 300, 'address', 'building', 'room', 'placed', 'detector', 'enabled', 'state', 'mode', 'fan', 'temperature', comm_topic+'DHT-2/pub', comm_topic+'DHT-2/sub', 'done')
-        numb =create_IOT_dev('WaterMeter', 'on', 'm3', timestamp(), 3600, 'address', 'building', 'room', 'placed', 'meter', 'enabled', 'state', 'mode', 'fan', 'NA', comm_topic+'waterMeter/pub', comm_topic+'waterMeter/sub', 'done')
-        numb =create_IOT_dev('ElecMeter', 'on', 'kWh', timestamp(), 3600, 'address', 'building', 'room', 'placed', 'meter', 'enabled', 'state', 'mode', 'fan', 'NA', comm_topic+'elecMeter/pub', comm_topic+'elecMeter/sub', 'done')
-        numb =create_IOT_dev('Boiler', 'off', 'celcius', timestamp(), 600, 'address', 'building', 'room', 'placed', 'actuator-detector', 'enabled', 'state', 'mode', 'fan', '85', comm_topic+'boiler/pub', comm_topic+'boiler/sub', 'done')
+        numb =create_IOT_dev('alarm', 'off', 'celcius', timestamp(), 300, 'teslaCarId', 'left front', 'alarm', 'false', 'cooling', 'mode', 'fan', '32', comm_topic+'ala-1/pub', comm_topic+'ala-1/sub', 'changed')
+        numb =create_IOT_dev('DHT-1', 'on', 'celcius', timestamp(), 300, 'teslaCarId', 'placed', 'detector', 'enabled', 'state', 'mode', 'fan', 'temperature', comm_topic+'DHT-1/pub', comm_topic+'DHT-1/sub', 'done')
+        numb =create_IOT_dev('DHT-2', 'on', 'celcius', timestamp(), 300, 'teslaCarId', 'placed', 'detector', 'enabled', 'state', 'mode', 'fan', 'temperature', comm_topic+'DHT-2/pub', comm_topic+'DHT-2/sub', 'done')
+        numb =create_IOT_dev('SensitivityMeter', 'on', 'N', timestamp(), 3600, 'teslaCarId', 'placed', 'meter', 'enabled', 'state', 'mode', 'fan', 'NA', comm_topic+'SensitivityMeter/pub', comm_topic+'SensitivityMeter/sub', 'done')
+        numb =create_IOT_dev('ElecMeter', 'on', 'kWh', timestamp(), 3600, 'teslaCarId', 'placed', 'meter', 'enabled', 'state', 'mode', 'fan', 'NA', comm_topic+'elecMeter/pub', comm_topic+'elecMeter/sub', 'done')
+        numb =create_IOT_dev('MotionSensor', 'off', 'km', timestamp(), 600, 'teslaCarId', 'placed', 'actuator-detector', 'enabled', 'state', 'mode', 'fan', '85', comm_topic+'motion/pub', comm_topic+'motion/sub', 'done')
         
         # add initial row data to all IOT devices:
         # water and elecricity consumption:
         
-        start_water =  437.4
+        start_senstivity =  437.4
         start_el = 162040
         hour_delta_w = 0.42/48
         hour_delta_el = (670/17)/48
-        current_w = start_water
+        current_w = start_senstivity
         current_el = start_el 
         for d in range(15,30):
             if d%7==0:hour_delta_el =(670/17)/12
@@ -282,7 +284,7 @@ if __name__ == '__main__':
                 current_el  = hour_delta_el + random.randrange(0,50)/100
                 # current_w  += hour_delta_w + random.randrange(-1,10)/40
                 # current_el  += hour_delta_el + random.randrange(-1,10)/40
-                add_IOT_data('WaterMeter', '2021-05-'+ str(d+1) + ' ' + str(h) + ':30:00', current_w)
+                add_IOT_data('SensitivityMeter', '2021-05-'+ str(d+1) + ' ' + str(h) + ':30:00', current_w)
                 add_IOT_data('ElecMeter', '2021-05-'+ str(d+1) + ' ' + str(h) + ':30:11', current_el)
 
     
